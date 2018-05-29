@@ -24,6 +24,7 @@ void vrvToolkit_destructor(Toolkit *tk);
 bool vrvToolkit_edit(Toolkit *tk, const char *editorAction);
 const char *vrvToolkit_getAvailableOptions(Toolkit *tk);
 const char *vrvToolkit_getElementAttr(Toolkit *tk, const char *xmlId);
+const char *vrvToolkit_getElementChildPitches(Toolkit *tk, const char *xmlId);
 const char *vrvToolkit_getElementsAtTime(Toolkit *tk, int millisec);
 const char *vrvToolkit_getHumdrum(Toolkit *tk);
 const char *vrvToolkit_getLog(Toolkit *tk);
@@ -75,6 +76,12 @@ const char *vrvToolkit_getAvailableOptions(Toolkit *tk)
 const char *vrvToolkit_getElementAttr(Toolkit *tk, const char *xmlId)
 {
     tk->SetCString(tk->GetElementAttr(xmlId));
+    return tk->GetCString();
+}
+
+const char *vrvToolkit_getElementChildPitches(Toolkit *tk, const char *xmlId)
+{
+    tk->SetCString(tk->GetElementChildrenPitches(xmlId));
     return tk->GetCString();
 }
 

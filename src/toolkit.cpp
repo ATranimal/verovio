@@ -883,6 +883,37 @@ std::string Toolkit::GetElementAttr(const std::string &xmlId)
     return o.json();
 }
 
+std::string Toolkit::GetElementChildrenPitches(const std::string &xmlId)
+{
+    jsonxx::Object o;
+
+    if(!m_doc.GetDrawingPage()) return o.json();
+    Object *parent = m_doc.GetDrawingPage()->FindChildByUuid(xmlId);
+    if (!parent) {
+        LogMessage("Element with id '%s' could not be found", xmlId.c_str());
+        return o.json();
+    }
+
+    // Get array of children 
+    ArrayOfObjects children;
+    InterfaceComparison comparison(INTERFACE_PITCH);
+    parent->FindAllChildByComparison(&children, &comparison);
+   
+    int i = 1; 
+    for (auto iter = children.begin(); iter != children.end(); ++iter) {
+        Object *child = dynamic_cast<Object *>(*iter);
+        if (child == nullptr) continue;
+        PitchInterface *pi = child->GetPitchInterface();
+        assert(pi);
+        jsonxx::Object pitch;
+        pitch << "pname" << std::to_string(pi->GetPname());
+        pitch << "oct" << std::to_string(pi->GetOct());
+        o << std::to_string(i++) << pitch;
+    }
+
+    return o.json();
+}
+
 bool Toolkit::Edit(const std::string &json_editorAction)
 {
 #ifdef USE_EMSCRIPTEN
