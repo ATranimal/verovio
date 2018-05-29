@@ -170,6 +170,7 @@ $exports .= "'_vrvToolkit_getAvailableOptions',";
 $exports .= "'_vrvToolkit_getElementAttr',";
 $exports .= "'_vrvToolkit_getElementChildPitches',";
 $exports .= "'_vrvToolkit_getElementsAtTime',";
+$exports .= "'_vrvToolkit_getElementStaffDef',";
 $exports .= "'_vrvToolkit_getHumdrum',";
 $exports .= "'_vrvToolkit_getLog',";
 $exports .= "'_vrvToolkit_getMEI',";

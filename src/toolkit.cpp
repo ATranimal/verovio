@@ -30,6 +30,7 @@
 #include "page.h"
 #include "slur.h"
 #include "staff.h"
+#include "staffdef.h"
 #include "svgdevicecontext.h"
 #include "vrv.h"
 
@@ -911,6 +912,36 @@ std::string Toolkit::GetElementChildrenPitches(const std::string &xmlId)
         o << std::to_string(i++) << pitch;
     }
 
+    return o.json();
+}
+
+std::string Toolkit::GetElementStaffDef(const std::string &xmlId)
+{
+    jsonxx::Object o;
+
+    if (!m_doc.GetDrawingPage()) return o.json();
+    Object *element = m_doc.GetDrawingPage()->FindChildByUuid(xmlId);
+    if (!element) {
+        LogMessage("Element with id '%s' could not be found", xmlId.c_str());
+        return o.json();
+    }
+
+    Staff *staff = dynamic_cast<Staff *>(
+        element->GetClassId() == STAFF ? element : element->GetFirstParent(STAFF)
+    );
+    if (staff == nullptr) {
+        LogMessage("Could not find an associated staff for element with id '%s'", xmlId.c_str());
+        return o.json();
+    }
+
+    StaffDef *staffDef = staff->m_drawingStaffDef;
+
+    ArrayOfStrAttr attributes;
+    staffDef->GetAttributes(&attributes);
+
+    for (auto iter = attributes.begin(); iter != attributes.end(); ++iter) {
+        o << (*iter).first << (*iter).second;
+    }
     return o.json();
 }
 

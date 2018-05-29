@@ -24,6 +24,9 @@ verovio.vrvToolkit.getElementChildPitches = Module.cwrap('vrvToolkit_getElementC
 // char *getElementsAtTime(Toolkit *ic, int time)
 verovio.vrvToolkit.getElementsAtTime = Module.cwrap('vrvToolkit_getElementsAtTime', 'string', ['number', 'number']);
 
+// char *getElementStaffDef(Toolkit *ic, const char *xmlId)
+verovio.vrvToolkit.getElementStaffDef = Module.cwrap('vrvToolkit_getElementStaffDef', 'string', ['number', 'string']);
+
 // char *getHumdrum(Toolkit *ic)
 verovio.vrvToolkit.getHumdrum = Module.cwrap('vrvToolkit_getHumdrum', 'string');
 
@@ -107,6 +110,10 @@ verovio.toolkit.prototype.getElementChildPitches = function (xmlId) {
 
 verovio.toolkit.prototype.getElementsAtTime = function (millisec) {
 	return JSON.parse(verovio.vrvToolkit.getElementsAtTime(this.ptr, millisec));
+};
+
+verovio.toolkit.prototype.getElementStaffDef = function (xmlId) {
+        return JSON.parse(verovio.vrvToolkit.getElementStaffDef(this.ptr, xmlId));
 };
 
 verovio.toolkit.prototype.getHumdrum = function () {

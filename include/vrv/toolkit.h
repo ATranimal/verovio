@@ -172,6 +172,13 @@ public:
      */
     std::string GetElementChildrenPitches(const std::string &xmlId);
 
+
+    /**
+     * Return selected StaffDef attributes for the given element
+     * If the element cannot be found, return an empty JSON string
+     */
+    std::string GetElementStaffDef(const std::string &xmlId);
+
     /**
      * Redo the layout of the loaded data.
      * This can be called once the rendering option were changed,
