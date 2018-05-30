@@ -30,6 +30,7 @@
 #include "page.h"
 #include "slur.h"
 #include "staff.h"
+#include "staffdef.h"
 #include "svgdevicecontext.h"
 #include "vrv.h"
 
@@ -879,6 +880,67 @@ std::string Toolkit::GetElementAttr(const std::string &xmlId)
     for (iter = attributes.begin(); iter != attributes.end(); ++iter) {
         o << (*iter).first << (*iter).second;
         // LogMessage("Element %s - %s", (*iter).first.c_str(), (*iter).second.c_str());
+    }
+    return o.json();
+}
+
+std::string Toolkit::GetElementChildrenPitches(const std::string &xmlId)
+{
+    jsonxx::Object o;
+
+    if(!m_doc.GetDrawingPage()) return o.json();
+    Object *parent = m_doc.GetDrawingPage()->FindChildByUuid(xmlId);
+    if (!parent) {
+        LogMessage("Element with id '%s' could not be found", xmlId.c_str());
+        return o.json();
+    }
+
+    // Get array of children 
+    ArrayOfObjects children;
+    InterfaceComparison comparison(INTERFACE_PITCH);
+    parent->FindAllChildByComparison(&children, &comparison);
+   
+    int i = 1; 
+    for (auto iter = children.begin(); iter != children.end(); ++iter) {
+        Object *child = dynamic_cast<Object *>(*iter);
+        if (child == nullptr) continue;
+        PitchInterface *pi = child->GetPitchInterface();
+        assert(pi);
+        jsonxx::Object pitch;
+        pitch << "pname" << std::to_string(pi->GetPname());
+        pitch << "oct" << std::to_string(pi->GetOct());
+        o << std::to_string(i++) << pitch;
+    }
+
+    return o.json();
+}
+
+std::string Toolkit::GetElementStaffDef(const std::string &xmlId)
+{
+    jsonxx::Object o;
+
+    if (!m_doc.GetDrawingPage()) return o.json();
+    Object *element = m_doc.GetDrawingPage()->FindChildByUuid(xmlId);
+    if (!element) {
+        LogMessage("Element with id '%s' could not be found", xmlId.c_str());
+        return o.json();
+    }
+
+    Staff *staff = dynamic_cast<Staff *>(
+        element->GetClassId() == STAFF ? element : element->GetFirstParent(STAFF)
+    );
+    if (staff == nullptr) {
+        LogMessage("Could not find an associated staff for element with id '%s'", xmlId.c_str());
+        return o.json();
+    }
+
+    StaffDef *staffDef = staff->m_drawingStaffDef;
+
+    ArrayOfStrAttr attributes;
+    staffDef->GetAttributes(&attributes);
+
+    for (auto iter = attributes.begin(); iter != attributes.end(); ++iter) {
+        o << (*iter).first << (*iter).second;
     }
     return o.json();
 }

@@ -18,8 +18,14 @@ verovio.vrvToolkit.getAvailableOptions = Module.cwrap('vrvToolkit_getAvailableOp
 // char *getElementAttr(Toolkit *ic, const char *xmlId)
 verovio.vrvToolkit.getElementAttr = Module.cwrap('vrvToolkit_getElementAttr', 'string', ['number', 'string']);
 
+// char *getElementChildPitches(Toolkit *ic, const char *xmlId)
+verovio.vrvToolkit.getElementChildPitches = Module.cwrap('vrvToolkit_getElementChildPitches', 'string', ['number', 'string']);
+
 // char *getElementsAtTime(Toolkit *ic, int time)
 verovio.vrvToolkit.getElementsAtTime = Module.cwrap('vrvToolkit_getElementsAtTime', 'string', ['number', 'number']);
+
+// char *getElementStaffDef(Toolkit *ic, const char *xmlId)
+verovio.vrvToolkit.getElementStaffDef = Module.cwrap('vrvToolkit_getElementStaffDef', 'string', ['number', 'string']);
 
 // char *getHumdrum(Toolkit *ic)
 verovio.vrvToolkit.getHumdrum = Module.cwrap('vrvToolkit_getHumdrum', 'string');
@@ -98,8 +104,16 @@ verovio.toolkit.prototype.getElementAttr = function (xmlId) {
 	return JSON.parse(verovio.vrvToolkit.getElementAttr(this.ptr, xmlId));
 };
 
+verovio.toolkit.prototype.getElementChildPitches = function (xmlId) {
+        return JSON.parse(verovio.vrvToolkit.getElementChildPitches(this.ptr, xmlId));
+};
+
 verovio.toolkit.prototype.getElementsAtTime = function (millisec) {
 	return JSON.parse(verovio.vrvToolkit.getElementsAtTime(this.ptr, millisec));
+};
+
+verovio.toolkit.prototype.getElementStaffDef = function (xmlId) {
+        return JSON.parse(verovio.vrvToolkit.getElementStaffDef(this.ptr, xmlId));
 };
 
 verovio.toolkit.prototype.getHumdrum = function () {
